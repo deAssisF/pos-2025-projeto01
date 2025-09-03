@@ -29,7 +29,8 @@ def fetch_user():
     """Busca dados do usuário logado"""
     if not is_logged_in():
         return None
-    resp = suap.get("api/rh/meus-dados/", token=session["token"])
+    # ENDPOINT CORRETO: /api/eu/
+    resp = suap.get("api/eu/", token=session["token"])
     return resp.json() if resp.ok else None
 
 @app.context_processor
@@ -62,19 +63,46 @@ def logout():
 def perfil():
     if not is_logged_in():
         return redirect(url_for("login"))
-    return render_template("perfil.html")
+    
+    user_data = fetch_user()
+    student_data = fetch_student_data()
+    
+    return render_template("perfil.html", user_data=user_data, student_data=student_data)
 
 @app.route("/boletim")
 def boletim():
     if not is_logged_in():
         return redirect(url_for("login"))
 
-    ano = request.args.get("ano", type=int, default=date.today().year)
-    periodo = request.args.get("periodo", type=int, default=1 if date.today().month <= 6 else 2)
+    # Buscar períodos disponíveis
+    periods = fetch_periods()
+    
+    # Parâmetros da URL ou valores padrão
+    ano = request.args.get("ano", type=int)
+    periodo = request.args.get("periodo", type=int)
+    
+    # Se não foram fornecidos, usar o primeiro período disponível
+    if not ano or not periodo:
+        if periods:
+            latest_period = periods[0]  # Assuming the first is the latest
+            ano = latest_period.get("ano_letivo", date.today().year)
+            periodo = latest_period.get("periodo_letivo", 1)
+        else:
+            ano = date.today().year
+            periodo = 1 if date.today().month <= 6 else 2
 
-    resp = suap.get(f"api/ensino/meu-boletim/{ano}/{periodo}/", token=session["token"])
-    boletim_data = resp.json() if resp.ok else []
-    return render_template("boletim.html", boletim=boletim_data, ano=ano, periodo=periodo)
+    # Buscar boletim
+    boletim_data = []
+    if ano and periodo:
+        resp = suap.get(f"api/ensino/meu-boletim/{ano}/{periodo}/", token=session["token"])
+        if resp.ok:
+            boletim_data = resp.json().get("results", [])
+    
+    return render_template("boletim.html", 
+                         boletim=boletim_data, 
+                         ano=ano, 
+                         periodo=periodo,
+                         periods=periods)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8888)

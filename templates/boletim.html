@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Boletim{% endblock %}
+{% block content %}
+  <div class="bg-white p-6 rounded-lg shadow">
+    <h1 class="text-2xl font-bold mb-6">Boletim</h1>
+
+    <!-- Form de seleção -->
+    <form method="get" class="flex gap-4 mb-6">
+      <div>
+        <label class="block text-sm">Ano</label>
+        <input type="number" name="ano" value="{{ ano }}" class="border rounded px-2 py-1">
+      </div>
+      <div>
+        <label class="block text-sm">Período</label>
+        <select name="periodo" class="border rounded px-2 py-1">
+          <option value="1" {% if periodo == 1 %}selected{% endif %}>1</option>
+          <option value="2" {% if periodo == 2 %}selected{% endif %}>2</option>
+        </select>
+      </div>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded self-end">Filtrar</button>
+    </form>
+
+    {% if boletim %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full border text-sm">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="border px-3 py-2">Disciplina</th>
+              <th class="border px-3 py-2">Etapa 1</th>
+              <th class="border px-3 py-2">Etapa 2</th>
+              <th class="border px-3 py-2">Média Final</th>
+              <th class="border px-3 py-2">Situação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in boletim %}
+              <tr class="hover:bg-gray-50">
+                <td class="border px-3 py-2">{{ d.disciplina }}</td>
+                <td class="border px-3 py-2 text-center">{{ d.nota_etapa_1 }}</td>
+                <td class="border px-3 py-2 text-center">{{ d.nota_etapa_2 }}</td>
+                <td class="border px-3 py-2 text-center">{{ d.media_final }}</td>
+                <td class="border px-3 py-2 text-center">{{ d.situacao }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-gray-600">Nenhum boletim encontrado para {{ ano }}/{{ periodo }}.</p>
+    {% endif %}
+  </div>
+{% endblock %}

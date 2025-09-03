@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Perfil{% endblock %}
+{% block content %}
+  <div class="bg-white p-6 rounded-lg shadow">
+    <h1 class="text-2xl font-bold mb-6">Perfil do Usuário</h1>
+    {% if user %}
+      <div class="flex items-center gap-6">
+        {% if user.url_foto %}
+          <img src="{{ user.url_foto }}" class="w-32 h-32 rounded-full border" alt="foto">
+        {% endif %}
+        <div>
+          <p><strong>Nome:</strong> {{ user.nome_usual or user.nome_completo }}</p>
+          <p><strong>Matrícula:</strong> {{ user.matricula }}</p>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          {% if user.vinculo %}
+            <p><strong>Curso:</strong> {{ user.vinculo.curso }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <p>Não foi possível carregar os dados do perfil.</p>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -6,26 +6,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-900">
-  <!-- Navbar -->
-  <nav class="bg-blue-600 p-4 text-white flex justify-between items-center">
-    <a href="{{ url_for('index') }}" class="text-xl font-semibold">SUAP Flask</a>
-    <div class="flex items-center gap-4">
-      {% if user %}
-        <span>{{ user.nome_usual or user.nome_completo }} ({{ user.matricula }})</span>
-        {% if user.url_foto %}
-          <img src="{{ user.url_foto }}" class="w-8 h-8 rounded-full border" alt="foto">
-        {% endif %}
-        <a href="{{ url_for('perfil') }}">Perfil</a>
-        <a href="{{ url_for('boletim') }}">Boletim</a>
-        <a href="{{ url_for('logout') }}" class="bg-red-500 px-2 py-1 rounded">Logout</a>
-      {% else %}
-        <a href="{{ url_for('login') }}" class="bg-green-500 px-2 py-1 rounded">Entrar</a>
-      {% endif %}
-    </div>
-  </nav>
-
-  <main class="max-w-5xl mx-auto p-6">
-    {% block content %}{% endblock %}
-  </main>
+  {% block content %}{% endblock %}
 </body>
 </html>

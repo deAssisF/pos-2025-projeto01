@@ -1,15 +1,106 @@
-{% extends "base.html" %}
-{% block title %}Página Inicial{% endblock %}
-{% block content %}
-  <div class="bg-white p-6 rounded-lg shadow">
-    <h1 class="text-3xl font-bold mb-4">Bem-vindo ao Cliente SUAP</h1>
-    <p class="text-gray-600 mb-6">
-      Este sistema integra-se ao SUAP para exibir dados do aluno: perfil, boletim e muito mais.
-    </p>
-    {% if not user %}
-      <a href="{{ url_for('login') }}" class="bg-blue-600 text-white px-4 py-2 rounded">Entrar com SUAP</a>
-    {% else %}
-      <p class="text-lg">Você já está logado como <strong>{{ user.nome_usual or user.nome_completo }}</strong>.</p>
-    {% endif %}
-  </div>
-{% endblock %}
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUAP Client - Portal do Estudante</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+    <!-- Navigation -->
+    <nav class="border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-black flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">S</span>
+                    </div>
+                    <span class="font-semibold text-lg">SUAP Client</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="min-h-screen flex items-center justify-center px-6">
+        <div class="max-w-lg mx-auto text-center">
+            <!-- Logo/Title -->
+            <div class="mb-8">
+                <div class="w-20 h-20 bg-black mx-auto mb-6 flex items-center justify-center">
+                    <span class="text-white font-bold text-2xl">S</span>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-3">
+                    Portal do Estudante
+                </h1>
+                <p class="text-gray-600 leading-relaxed">
+                    Acesse suas informações acadêmicas do SUAP de forma simples e rápida.
+                </p>
+            </div>
+
+            <!-- Login Button -->
+            <div class="mb-12">
+                <button class="w-full bg-black text-white py-4 px-6 font-medium btn-hover hover:bg-gray-800">
+                    <a href="{{ url_for('login') }}">Entrar com SUAP</a>
+                </button>
+            </div>
+
+            <!-- Features -->
+            <div class="space-y-6 text-left">
+                <div class="flex items-start space-x-4">
+                    <div class="w-2 h-2 bg-black mt-2 flex-shrink-0"></div>
+                    <div>
+                        <h3 class="font-medium text-gray-900 mb-1">Perfil Completo</h3>
+                        <p class="text-sm text-gray-600">Visualize suas informações pessoais e foto</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="w-2 h-2 bg-black mt-2 flex-shrink-0"></div>
+                    <div>
+                        <h3 class="font-medium text-gray-900 mb-1">Boletim Digital</h3>
+                        <p class="text-sm text-gray-600">Consulte suas notas por período letivo</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="w-2 h-2 bg-black mt-2 flex-shrink-0"></div>
+                    <div>
+                        <h3 class="font-medium text-gray-900 mb-1">Interface Limpa</h3>
+                        <p class="text-sm text-gray-600">Navegação simples e intuitiva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 py-6">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-sm text-gray-500">v1.0 • Desenvolvido com Flask + OAuth 2.0</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.querySelector('button');
+            
+            loginBtn.addEventListener('click', function() {
+                console.log('Redirecting to SUAP OAuth...');
+                // Aqui seria o redirect para OAuth
+            });
+        });
+    </script>
+</body>
+</html>

@@ -6,113 +6,12 @@
     <title>Boletim - SUAP Client</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; }
-        
-        .btn-hover {
-            transition: all 0.2s ease;
-        }
-        
-        .btn-hover:hover {
-            transform: translateY(-1px);
-        }
-        
-        .nav-link {
-            transition: all 0.2s ease;
-        }
-        
-        .nav-link:hover {
-            color: #374151;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
-            opacity: 0;
-        }
-
-        .slide-up {
-            animation: slideUp 0.5s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .scale-in {
-            animation: scaleIn 0.4s ease-out forwards;
-            opacity: 0;
-            transform: scale(0.95);
-        }
-
-        .grade-animation {
-            animation: gradeReveal 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateX(-10px);
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            to { 
-                opacity: 1; 
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes scaleIn {
-            to { 
-                opacity: 1; 
-                transform: scale(1);
-            }
-        }
-
-        @keyframes gradeReveal {
-            to { 
-                opacity: 1; 
-                transform: translateX(0);
-            }
-        }
-
-        .grade-excellent { 
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-        
-        .grade-good { 
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-        }
-        
-        .grade-average { 
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-        
-        .grade-poor { 
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-        }
-
-        .progress-bar {
-            transition: width 1s ease-out;
-        }
-
-        .hover-lift {
-            transition: all 0.3s ease;
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-        .stagger-4 { animation-delay: 0.4s; }
-        .stagger-5 { animation-delay: 0.5s; }
-        .stagger-6 { animation-delay: 0.6s; }
+        .grade-aprovado { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+        .grade-reprovado { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+        .grade-recuperacao { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+        .grade-cursando { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; }
+        .grade-na { background: #e5e7eb; color: #1e293b; }
+        .progress-bar { transition: width 1s ease-out; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -130,27 +29,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ url_for('perfil') }}" class="nav-link text-gray-500">Perfil</a>
+                    <a href="{{ url_for('user') }}" class="nav-link text-gray-500">Perfil</a>
                     <a href="{{ url_for('boletim') }}" class="nav-link text-gray-900 font-medium">Boletim</a>
                 </div>
 
                 <!-- User Info -->
                 <div class="flex items-center space-x-4">
-                    <div class="hidden sm:flex items-center space-x-3">
-                        <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">{{ user.nome_usual }}</p>
-                            <p class="text-xs text-gray-500">{{ user.identificacao }}</p>
-                        </div>
-                        <div class="w-10 h-10 bg-gray-300 rounded-full overflow-hidden">
-                            <img src="{{ user.foto }}" 
-                                 alt="Avatar" class="w-full h-full object-cover">
-                        </div>
-                    </div>
-                    
                     <a href="{{ url_for('logout') }}" class="text-gray-500 btn-hover hover:text-gray-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
+                        Sair
                     </a>
                 </div>
             </div>
@@ -160,326 +46,106 @@
     <!-- Main Content -->
     <main class="max-w-6xl mx-auto px-6 py-8">
         <!-- Page Header -->
-        <div class="mb-8 fade-in">
+        <div class="mb-8">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 mb-2">Boletim Acadêmico</h1>
                     <p class="text-gray-600">Acompanhe suas notas e desempenho</p>
                 </div>
-                
-                <!-- Year Selector -->
-                <div class="flex items-center space-x-3">
-                    <label class="text-sm font-medium text-gray-700">Ano:</label>
-                    <select id="yearSelector" class="border border-gray-300 px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
-                        {% for period in periods %}
-                        <option value="{{ period.ano_letivo }}" {% if period.ano_letivo == ano %}selected{% endif %}>{{ period.ano_letivo }}</option>
-                        {% endfor %}
-                    </select>
+                <form method="get" class="flex items-center space-x-3">
                     <label class="text-sm font-medium text-gray-700">Período:</label>
-                    <select id="periodSelector" class="border border-gray-300 px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
-                        {% for period in periods %}
-                        {% if period.ano_letivo == ano %}
-                        <option value="{{ period.periodo_letivo }}" {% if period.periodo_letivo == periodo %}selected{% endif %}>{{ period.periodo_letivo }}</option>
-                        {% endif %}
+                    <select name="periodo" class="border border-gray-300 px-4 py-2 bg-white" onchange="this.form.submit()">
+                        {% for p in periodos %}
+                            {% set periodo_str = p.ano_letivo ~ '.' ~ p.periodo_letivo %}
+                            <option value="{{ periodo_str }}" {% if selected_periodo == periodo_str %}selected{% endif %}>{{ periodo_str }}</option>
                         {% endfor %}
                     </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white border border-gray-200 p-6 hover-lift scale-in stagger-1">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Média Geral</p>
-                        <p class="text-2xl font-bold text-gray-900" id="averageGrade">{{ "%.1f"|format(media_geral) }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <div class="bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: {{ (media_geral * 10)|round(0) }}%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white border border-gray-200 p-6 hover-lift scale-in stagger-2">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Disciplinas</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ total_disciplinas }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white border border-gray-200 p-6 hover-lift scale-in stagger-3">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Aprovado</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ aprovadas }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white border border-gray-200 p-6 hover-lift scale-in stagger-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Em Recuperação</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ recuperacao }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                        <svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
         <!-- Grades Table -->
-        <div class="bg-white border border-gray-200 slide-up stagger-2">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Notas por Disciplina - {{ ano }}.{{ periodo }}</h3>
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 m-8">
+          {% for data in boletim_data %}
+          <div class="rounded-2xl bg-white p-6 text-gray-900 shadow-xl border border-teal-600/30">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <h1 class="text-lg font-bold text-teal-700">{{ data.disciplina }}</h1>
+              {% if data.situacao == 'Aprovado' %}
+                <span class="rounded-full bg-green-600/20 px-4 py-1 text-xs text-green-700 font-semibold">{{ data.situacao }}</span>
+              {% elif data.situacao == 'Cursando' %}
+                <span class="rounded-full bg-yellow-400/20 px-4 py-1 text-xs text-yellow-700 font-semibold">{{ data.situacao }}</span>
+              {% else %}
+                <span class="rounded-full bg-red-600/20 px-4 py-1 text-xs text-red-700 font-semibold">{{ data.situacao }}</span>
+              {% endif %}
             </div>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Disciplina</th>
-                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">1ª Unidade</th>
-                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">2ª Unidade</th>
-                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">3ª Unidade</th>
-                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">4ª Unidade</th>
-                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Média</th>
-                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200" id="gradesTable">
-                        {% for disciplina in boletim %}
-                        <tr class="hover:bg-gray-50 grade-animation">
-                            <td class="py-4 px-6 font-medium text-gray-900">{{ disciplina.disciplina }}</td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="inline-block px-2 py-1 text-sm font-medium rounded {{ 
-                                    'grade-excellent' if disciplina.nota_etapa_1 and disciplina.nota_etapa_1.nota >= 9.0 else
-                                    'grade-good' if disciplina.nota_etapa_1 and disciplina.nota_etapa_1.nota >= 8.0 else
-                                    'grade-average' if disciplina.nota_etapa_1 and disciplina.nota_etapa_1.nota >= 7.0 else
-                                    'grade-poor' if disciplina.nota_etapa_1 and disciplina.nota_etapa_1.nota else '' }}">
-                                    {% if disciplina.nota_etapa_1 and disciplina.nota_etapa_1.nota is not none %}
-                                        {{ "%.1f"|format(disciplina.nota_etapa_1.nota) }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="inline-block px-2 py-1 text-sm font-medium rounded {{
-                                    'grade-excellent' if disciplina.nota_etapa_2 and disciplina.nota_etapa_2.nota >= 9.0 else
-                                    'grade-good' if disciplina.nota_etapa_2 and disciplina.nota_etapa_2.nota >= 8.0 else
-                                    'grade-average' if disciplina.nota_etapa_2 and disciplina.nota_etapa_2.nota >= 7.0 else
-                                    'grade-poor' if disciplina.nota_etapa_2 and disciplina.nota_etapa_2.nota else '' }}">
-                                    {% if disciplina.nota_etapa_2 and disciplina.nota_etapa_2.nota is not none %}
-                                        {{ "%.1f"|format(disciplina.nota_etapa_2.nota) }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="inline-block px-2 py-1 text-sm font-medium rounded {{
-                                    'grade-excellent' if disciplina.nota_etapa_3 and disciplina.nota_etapa_3.nota >= 9.0 else
-                                    'grade-good' if disciplina.nota_etapa_3 and disciplina.nota_etapa_3.nota >= 8.0 else
-                                    'grade-average' if disciplina.nota_etapa_3 and disciplina.nota_etapa_3.nota >= 7.0 else
-                                    'grade-poor' if disciplina.nota_etapa_3 and disciplina.nota_etapa_3.nota else '' }}">
-                                    {% if disciplina.nota_etapa_3 and disciplina.nota_etapa_3.nota is not none %}
-                                        {{ "%.1f"|format(disciplina.nota_etapa_3.nota) }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="inline-block px-2 py-1 text-sm font-medium rounded {{
-                                    'grade-excellent' if disciplina.nota_etapa_4 and disciplina.nota_etapa_4.nota >= 9.0 else
-                                    'grade-good' if disciplina.nota_etapa_4 and disciplina.nota_etapa_4.nota >= 8.0 else
-                                    'grade-average' if disciplina.nota_etapa_4 and disciplina.nota_etapa_4.nota >= 7.0 else
-                                    'grade-poor' if disciplina.nota_etapa_4 and disciplina.nota_etapa_4.nota else '' }}">
-                                    {% if disciplina.nota_etapa_4 and disciplina.nota_etapa_4.nota is not none %}
-                                        {{ "%.1f"|format(disciplina.nota_etapa_4.nota) }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="text-lg font-bold text-gray-900">
-                                    {% if disciplina.media_disciplina is not none %}
-                                        {{ "%.1f"|format(disciplina.media_disciplina) }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="inline-block px-3 py-1 text-xs font-medium rounded-full {{
-                                    'text-green-600 bg-green-100' if disciplina.situacao == 'Aprovado' else
-                                    'text-yellow-600 bg-yellow-100' if disciplina.situacao == 'Recuperação' else
-                                    'text-red-600 bg-red-100' }}">
-                                    {{ disciplina.situacao }}
-                                </span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="mt-5 space-y-2 text-sm md:text-base">
+              <p><span class="font-semibold text-teal-800">CH:</span> <span class="text-black">{{ data.carga_horaria }}H</span></p>
+              <p><span class="font-semibold text-teal-800">Aulas:</span> <span class="text-black">{{ data.carga_horaria_cumprida }}/{{ data.carga_horaria }}</span></p>
+              <div>
+                <span class="font-semibold text-teal-800">Frequência:</span> <span class="text-black">{{ data.numero_faltas }} faltas</span>
+                <div class="w-full bg-gray-300 rounded-full h-3 mt-1">
+                  <div class="h-3 rounded-full 
+                    {% if data.percentual_carga_horaria_frequentada > 75 %}
+                      bg-green-500
+                    {% else %}
+                      bg-red-500
+                    {% endif %}
+                  " style="width: {{ data.percentual_carga_horaria_frequentada }}%"></div>
+                </div>
+                <span class="text-sm text-gray-700">{{ data.percentual_carga_horaria_frequentada }}% de frequência</span>
+              </div>
             </div>
-        </div>
-
-        <!-- Performance Chart -->
-        <div class="mt-8 bg-white border border-gray-200 p-6 slide-up stagger-3">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">Evolução das Notas</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-gray-900 mb-1">
-                        {% set notas_etapa1 = [] %}
-                        {% for disciplina in boletim %}
-                            {% if disciplina.nota_etapa_1 and disciplina.nota_etapa_1.nota is not none %}
-                                {% set _ = notas_etapa1.append(disciplina.nota_etapa_1.nota) %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if notas_etapa1 %}
-                            {{ (notas_etapa1|sum / notas_etapa1|length)|round(2) }}
-                        {% else %}
-                            0.0
-                        {% endif %}
-                    </div>
-                    <div class="text-sm text-gray-500">1ª Unidade</div>
-                    <div class="mt-2 bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-500 h-2 rounded-full progress-bar" style="width: 
-                            {% if notas_etapa1 %}
-                                {{ (notas_etapa1|sum / notas_etapa1|length * 10)|round(0) }}%
-                            {% else %}0%{% endif %}"></div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-gray-900 mb-1">
-                        {% set notas_etapa2 = [] %}
-                        {% for disciplina in boletim %}
-                            {% if disciplina.nota_etapa_2 and disciplina.nota_etapa_2.nota is not none %}
-                                {% set _ = notas_etapa2.append(disciplina.nota_etapa_2.nota) %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if notas_etapa2 %}
-                            {{ (notas_etapa2|sum / notas_etapa2|length)|round(2) }}
-                        {% else %}
-                            0.0
-                        {% endif %}
-                    </div>
-                    <div class="text-sm text-gray-500">2ª Unidade</div>
-                    <div class="mt-2 bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: 
-                            {% if notas_etapa2 %}
-                                {{ (notas_etapa2|sum / notas_etapa2|length * 10)|round(0) }}%
-                            {% else %}0%{% endif %}"></div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-gray-900 mb-1">
-                        {% set notas_etapa3 = [] %}
-                        {% for disciplina in boletim %}
-                            {% if disciplina.nota_etapa_3 and disciplina.nota_etapa_3.nota is not none %}
-                                {% set _ = notas_etapa3.append(disciplina.nota_etapa_3.nota) %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if notas_etapa3 %}
-                            {{ (notas_etapa3|sum / notas_etapa3|length)|round(2) }}
-                        {% else %}
-                            0.0
-                        {% endif %}
-                    </div>
-                    <div class="text-sm text-gray-500">3ª Unidade</div>
-                    <div class="mt-2 bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: 
-                            {% if notas_etapa3 %}
-                                {{ (notas_etapa3|sum / notas_etapa3|length * 10)|round(0) }}%
-                            {% else %}0%{% endif %}"></div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-gray-900 mb-1">
-                        {% set medias = [] %}
-                        {% for disciplina in boletim %}
-                            {% if disciplina.media_disciplina is not none %}
-                                {% set _ = medias.append(disciplina.media_disciplina) %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if medias %}
-                            {{ (medias|sum / medias|length)|round(2) }}
-                        {% else %}
-                            0.0
-                        {% endif %}
-                    </div>
-                    <div class="text-sm text-gray-500">Média Final</div>
-                    <div class="mt-2 bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-500 h-2 rounded-full progress-bar" style="width: 
-                            {% if medias %}
-                                {{ (medias|sum / medias|length * 10)|round(0) }}%
-                            {% else %}0%{% endif %}"></div>
-                    </div>
-                </div>
+            <div class="mt-6">
+              <p class="mb-3 font-semibold text-teal-800">Notas</p>
+              <div class="flex flex-wrap gap-2">
+                {% set nota_e1 = data.nota_etapa_1.nota if data.nota_etapa_1 is mapping and data.nota_etapa_1.nota is number else None %}
+                {% set nota_e2 = data.nota_etapa_2.nota if data.nota_etapa_2 is mapping and data.nota_etapa_2.nota is number else None %}
+                {% set nota_e3 = data.nota_etapa_3.nota if data.nota_etapa_3 is mapping and data.nota_etapa_3.nota is number else None %}
+                {% set nota_e4 = data.nota_etapa_4.nota if data.nota_etapa_4 is mapping and data.nota_etapa_4.nota is number else None %}
+                {% set nota_md = data.media_final_disciplina if data.media_final_disciplina is number else None %}
+                <span class="px-5 py-4 rounded-lg text-sm font-bold
+                  {% if nota_e1 is none %} bg-gray-300 text-gray-700
+                  {% elif nota_e1 >= 6 %} bg-teal-600 text-white
+                  {% elif nota_e1 >= 4 %} bg-yellow-400 text-black
+                  {% else %} bg-red-600 text-white {% endif %}">
+                  E1: {{ nota_e1 if nota_e1 is not none else 'N/A' }}
+                </span>
+                <span class="px-5 py-4 rounded-lg text-sm font-bold
+                  {% if nota_e2 is none %} bg-gray-300 text-gray-700
+                  {% elif nota_e2 >= 6 %} bg-teal-600 text-white
+                  {% elif nota_e2 >= 4 %} bg-yellow-400 text-black
+                  {% else %} bg-red-600 text-white {% endif %}">
+                  E2: {{ nota_e2 if nota_e2 is not none else 'N/A' }}
+                </span>
+                <span class="px-5 py-4 rounded-lg text-sm font-bold
+                  {% if nota_e3 is none %} bg-gray-300 text-gray-700
+                  {% elif nota_e3 >= 6 %} bg-teal-600 text-white
+                  {% elif nota_e3 >= 4 %} bg-yellow-400 text-black
+                  {% else %} bg-red-600 text-white {% endif %}">
+                  E3: {{ nota_e3 if nota_e3 is not none else 'N/A' }}
+                </span>
+                <span class="px-5 py-4 rounded-lg text-sm font-bold
+                  {% if nota_e4 is none %} bg-gray-300 text-gray-700
+                  {% elif nota_e4 >= 6 %} bg-teal-600 text-white
+                  {% elif nota_e4 >= 4 %} bg-yellow-400 text-black
+                  {% else %} bg-red-600 text-white {% endif %}">
+                  E4: {{ nota_e4 if nota_e4 is not none else 'N/A' }}
+                </span>
+                <span class="px-6 py-4 rounded-lg text-sm font-bold
+                  {% if nota_md is none %} bg-gray-300 text-gray-700
+                  {% elif nota_md >= 6 %} bg-teal-600 text-white
+                  {% else %} bg-red-600 text-white {% endif %}">
+                  MD: {{ nota_md if nota_md is not none else 'N/A' }}
+                </span>
+              </div>
             </div>
+          </div>
+          {% else %}
+          <div class="col-span-full text-center text-gray-500 py-8">
+              Nenhuma disciplina encontrada para este período.
+          </div>
+          {% endfor %}
         </div>
     </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Year selector change
-            const yearSelector = document.getElementById('yearSelector');
-            const periodSelector = document.getElementById('periodSelector');
-            
-            yearSelector.addEventListener('change', function() {
-                window.location.href = "{{ url_for('boletim') }}?ano=" + this.value + "&periodo=1";
-            });
-
-            periodSelector.addEventListener('change', function() {
-                window.location.href = "{{ url_for('boletim') }}?ano=" + yearSelector.value + "&periodo=" + this.value;
-            });
-
-            // Logout functionality
-            const logoutBtn = document.querySelector('nav a[href="{{ url_for('logout') }}"]');
-            logoutBtn.addEventListener('click', function(e) {
-                if (!confirm('Deseja realmente fazer logout?')) {
-                    e.preventDefault();
-                }
-            });
-
-            // Animate progress bars on load
-            setTimeout(() => {
-                const progressBars = document.querySelectorAll('.progress-bar');
-                progressBars.forEach(bar => {
-                    const width = bar.style.width;
-                    bar.style.width = '0%';
-                    setTimeout(() => {
-                        bar.style.width = width;
-                    }, 100);
-                });
-            }, 500);
-        });
-    </script>
 </body>
 </html>

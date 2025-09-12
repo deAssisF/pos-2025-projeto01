@@ -42,7 +42,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ url_for('perfil') }}" class="nav-link text-gray-900 font-medium">Perfil</a>
+                    <a href="{{ url_for('user') }}" class="nav-link text-gray-900 font-medium">Perfil</a>
                     <a href="{{ url_for('boletim') }}" class="nav-link text-gray-500">Boletim</a>
                 </div>
 
@@ -50,11 +50,11 @@
                 <div class="flex items-center space-x-4">
                     <div class="hidden sm:flex items-center space-x-3">
                         <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">{{ user_data.nome_usual }}</p>
-                            <p class="text-xs text-gray-500">{{ user_data.identificacao }}</p>
+                            <p class="text-sm font-medium text-gray-900">{{ user.nome_usual }}</p>
+                            <p class="text-xs text-gray-500">{{ user.matricula }}</p>
                         </div>
                         <div class="w-10 h-10 bg-gray-300 rounded-full overflow-hidden">
-                            <img src="{{ user_data.foto }}" 
+                            <img src="{{ user.foto }}" 
                                  alt="Avatar" class="w-full h-full object-cover">
                         </div>
                     </div>
@@ -84,17 +84,16 @@
                     <!-- Profile Photo -->
                     <div class="flex-shrink-0">
                         <div class="w-32 h-32 bg-gray-300 rounded-full overflow-hidden mx-auto md:mx-0">
-                            <img src="{{ user_data.foto }}" 
-                                 alt="Foto do usuário" class="w-full h-full object-cover">
+                            <img src="{{ user.url_foto_75x100|default('https://via.placeholder.com/128') }}" alt="Foto do usuário" class="w-full h-full object-cover">
                         </div>
                     </div>
 
                     <!-- User Info -->
                     <div class="flex-1 text-center md:text-left">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ user_data.nome_registro }}</h2>
-                        <p class="text-lg text-gray-600 mb-4">{{ student_data.curso if student_data else 'Curso não disponível' }}</p>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ user.nome_usual|default(user.nome_registro)|default('Nome não disponível') }}</h2>
+                        <p class="text-lg text-gray-600 mb-4">{{ user.vinculo.curso|default('Curso não disponível') }}</p>
                         <div class="inline-flex items-center px-3 py-1 bg-gray-100 text-sm text-gray-700">
-                            Matrícula: {{ user_data.identificacao }}
+                            Matrícula: {{ user.vinculo.matricula|default('Não disponível') }}
                         </div>
                     </div>
                 </div>
@@ -111,19 +110,15 @@
                 <div class="p-6 space-y-4">
                     <div>
                         <label class="text-sm font-medium text-gray-500">CPF</label>
-                        <p class="text-gray-900">{{ user_data.cpf }}</p>
+                        <p class="text-gray-900">{{ user.cpf|default('Não disponível') }}</p>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Data de Nascimento</label>
-                        <p class="text-gray-900">{{ user_data.data_de_nascimento }}</p>
+                        <p class="text-gray-900">{{ user.data_nascimento|default('Não disponível') }}</p>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Email</label>
-                        <p class="text-gray-900">{{ user_data.email_preferencial }}</p>
-                    </div>
-                    <div>
-                        <label class="text-sm font-medium text-gray-500">Telefone</label>
-                        <p class="text-gray-900">Não disponível</p>
+                        <p class="text-gray-900">{{ user.email|default('Não disponível') }}</p>
                     </div>
                 </div>
             </div>
@@ -136,44 +131,15 @@
                 <div class="p-6 space-y-4">
                     <div>
                         <label class="text-sm font-medium text-gray-500">Campus</label>
-                        <p class="text-gray-900">{{ user_data.campus }}</p>
+                        <p class="text-gray-900">{{ user.vinculo.campus|default('Não disponível') }}</p>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Curso</label>
-                        <p class="text-gray-900">{{ student_data.curso if student_data else 'Não disponível' }}</p>
+                        <p class="text-gray-900">{{ user.vinculo.curso|default('Não disponível') }}</p>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Situação</label>
-                        <div class="flex items-center space-x-2">
-                            {% if student_data and student_data.situacao %}
-                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span class="text-gray-900">{{ student_data.situacao }}</span>
-                            {% else %}
-                            <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
-                            <span class="text-gray-900">Não disponível</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-sm font-medium text-gray-500">Período Letivo Atual</label>
-                        <p class="text-gray-900">{{ student_data.periodo_referencia if student_data else 'Não disponível' }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Information -->
-            <div class="bg-white border border-gray-200">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="font-semibold text-gray-900">Informações Adicionais</h3>
-                </div>
-                <div class="p-6 space-y-4">
-                    <div>
-                        <label class="text-sm font-medium text-gray-500">Ano de Ingresso</label>
-                        <p class="text-gray-900">{{ student_data.ingresso if student_data else 'Não disponível' }}</p>
-                    </div>
-                    <div>
-                        <label class="text-sm font-medium text-gray-500">Forma de Ingresso</label>
-                        <p class="text-gray-900">{{ student_data.forma_ingresso if student_data else 'Não disponível' }}</p>
+                        <p class="text-gray-900">{{ user.vinculo.situacao|default('Não disponível') }}</p>
                     </div>
                 </div>
             </div>
